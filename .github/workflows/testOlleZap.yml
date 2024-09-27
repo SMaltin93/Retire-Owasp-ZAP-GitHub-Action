@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.6.1
-        with:
+        with: 
+          docker_name: 'owasp/zap2docker-weekly'
           target: 'http://testphp.vulnweb.com/'
           fail_action: true  # Fail the workflow if vulnerabilities are found
