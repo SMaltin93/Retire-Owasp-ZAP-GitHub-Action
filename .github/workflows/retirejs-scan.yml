@@ -35,6 +35,16 @@ jobs:
       run: |
         sudo apt-get remove -y containerd.io
 
+
+    - name: Check RetireJS Report for High Vulnerabilities
+      run: |
+        if grep -q '"severity": "high"' retirejs-report.json; then
+          echo "High vulnerability detected by RetireJS!";
+          exit 1;
+        else
+          echo "No high vulnerabilities found in RetireJS report.";
+        fi
+
     - name: Set up Docker
       run: |
         sudo apt-get update
@@ -48,8 +58,20 @@ jobs:
         docker run -v ${PWD}:/zap/wrk/ --user root -t zaproxy/zap-stable zap-baseline.py \
         -t https://smaltin93.github.io/Retire-Owasp-ZAP-GitHub-Action/ -r zap-report.html -I
 
-    - name: Upload ZAP Report
+    - name: Check ZAP Report for High Vulnerabilities
+      run: |
+        if grep -q '<riskcode>3</riskcode>' zap-report.xml; then
+          echo "High vulnerability detected by OWASP ZAP!";
+          exit 1;
+        else
+          echo "No high vulnerabilities found in ZAP report.";
+        fi
+  
+    - name: Upload RetireJS and ZAP Reports
       uses: actions/upload-artifact@v4
       with:
-        name: zap-report
-        path: zap-report.html
+        name: security-reports
+        path: |
+          retirejs-report.json
+          zap-report.html
+          zap-report.xml
