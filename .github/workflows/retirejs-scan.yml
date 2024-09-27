@@ -43,6 +43,10 @@ jobs:
           echo "No high vulnerabilities found in RetireJS report.";
         fi
 
+    - name: Remove conflicting packages
+      run: |
+        sudo apt-get remove -y containerd.io
+
     # Set up Docker
     - name: Set up Docker
       run: |
