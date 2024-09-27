@@ -1,4 +1,4 @@
-name: RetireJS Vulnerability Scan
+name: RetireJS and OWASP ZAP Vulnerability Scan
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  retirejs-scan:
+  security-scan:
     runs-on: ubuntu-latest
 
     steps:
@@ -17,7 +17,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '20'
 
     - name: Install RetireJS
       run: npm install -g retire
@@ -26,7 +26,17 @@ jobs:
       run: retire --outputformat json --outputpath retirejs-report.json
 
     - name: Upload RetireJS Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: retirejs-report
         path: retirejs-report.json
+
+    - name: OWASP ZAP Baseline Scan
+      run: |
+        docker run -v $(pwd):/zap/wrk/ -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8080 -r zap-report.html
+
+    - name: Upload ZAP Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: zap-report
+        path: zap-report.html
