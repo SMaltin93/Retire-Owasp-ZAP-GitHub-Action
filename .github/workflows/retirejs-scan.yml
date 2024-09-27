@@ -44,7 +44,7 @@ jobs:
         else
           echo "No high vulnerabilities found in RetireJS report.";
         fi
-A
+        
     - name: Set up Docker
       run: |
         sudo apt-get update
