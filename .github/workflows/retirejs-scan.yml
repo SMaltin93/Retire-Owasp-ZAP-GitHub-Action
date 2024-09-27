@@ -3,7 +3,7 @@ name: RetireJS Vulnerability Scan
 on:
   push:
     branches:
-      - main
+      - test-sam
   pull_request:
 
 jobs:
