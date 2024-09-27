@@ -1,0 +1,32 @@
+name: RetireJS Vulnerability Scan
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  retirejs-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'
+
+    - name: Install RetireJS
+      run: npm install -g retire
+
+    - name: Run RetireJS Scan
+      run: retire --outputformat json --outputpath retirejs-report.json
+
+    - name: Upload RetireJS Report
+      uses: actions/upload-artifact@v3
+      with:
+        name: retirejs-report
+        path: retirejs-report.json
