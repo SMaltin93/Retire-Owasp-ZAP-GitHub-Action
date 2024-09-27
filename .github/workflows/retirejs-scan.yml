@@ -1,4 +1,4 @@
-name: RetireJS and OWASP ZAP Vulnerability Scan
+name: Pre-deploy Vulnerability Scan
 
 on:
   push:
@@ -19,22 +19,24 @@ jobs:
       with:
         node-version: '20'
 
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Start Local Server
+      run: |
+        nohup node server.js &  # Serve your app locally for ZAP to scan
+        sleep 5                 # Give the server some time to start
+
+    - name: Run OWASP ZAP Baseline Scan
+      run: |
+        docker run -v ${PWD}:/zap/wrk/ --user root -t zaproxy/zap-stable zap-baseline.py \
+        -t http://localhost:8888/ -r zap-report.html -x zap-report.xml -I
+
     - name: Install RetireJS
       run: npm install -g retire
 
     - name: Run RetireJS Scan
       run: retire --outputformat json --outputpath retirejs-report.json
-
-    - name: Upload RetireJS Report
-      uses: actions/upload-artifact@v4
-      with:
-        name: retirejs-report
-        path: retirejs-report.json
-
-    - name: Remove conflicting packages
-      run: |
-        sudo apt-get remove -y containerd.io
-
 
     - name: Check RetireJS Report for High Vulnerabilities
       run: |
@@ -45,19 +47,6 @@ jobs:
           echo "No high vulnerabilities found in RetireJS report.";
         fi
 
-    - name: Set up Docker
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y docker.io
-
-    - name: Docker Login
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      
-    - name: OWASP ZAP Baseline Scan
-      run: |
-        docker run -v ${PWD}:/zap/wrk/ --user root -t zaproxy/zap-stable zap-baseline.py \
-        -t https://smaltin93.github.io/Retire-Owasp-ZAP-GitHub-Action/ -r zap-report.html -I
-
     - name: Check ZAP Report for High Vulnerabilities
       run: |
         if grep -q '<riskcode>3</riskcode>' zap-report.xml; then
@@ -66,7 +55,14 @@ jobs:
         else
           echo "No high vulnerabilities found in ZAP report.";
         fi
-  
+
+    - name: Deploy to GitHub Pages
+      if: success()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.TOKEN }}
+        publish_dir: ./  # Publish your directory to GitHub Pages
+
     - name: Upload RetireJS and ZAP Reports
       uses: actions/upload-artifact@v4
       with:
