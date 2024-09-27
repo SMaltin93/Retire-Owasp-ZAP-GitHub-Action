@@ -30,11 +30,15 @@ jobs:
       with:
         name: retirejs-report
         path: retirejs-report.json
-        
+
+    - name: Remove conflicting packages
+      run: |
+        sudo apt-get remove -y containerd.io
+
     - name: Set up Docker
       run: |
         sudo apt-get update
-        sudo apt-get install docker.io
+        sudo apt-get install -y docker.io
 
     - name: OWASP ZAP Baseline Scan
       run: |
