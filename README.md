@@ -1,1 +1,1 @@
-# Retire-Owasp-ZAP-GitHub-Action
+# Sam Retire-Owasp-ZAP-GitHub-Action
