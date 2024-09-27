@@ -30,10 +30,15 @@ jobs:
       with:
         name: retirejs-report
         path: retirejs-report.json
+        
+    - name: Set up Docker
+      run: |
+        sudo apt-get update
+        sudo apt-get install docker.io
 
     - name: OWASP ZAP Baseline Scan
       run: |
-        docker run -v $(pwd):/zap/wrk/ -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:8080 -r zap-report.html
+        docker run -v $(pwd):/zap/wrk/ -t owasp/zap2docker-stable:latest zap-baseline.py -t http://localhost:8080 -r zap-report.html
 
     - name: Upload ZAP Report
       uses: actions/upload-artifact@v4
