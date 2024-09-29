@@ -130,6 +130,12 @@ jobs:
       run: python3 check_vulnerabilities.py
       env:
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        Author: ${{ github.actor }}
+        Repository: ${{ github.repository }}
+        Branch: ${{ github.ref }}
+        # author email
+        AuthorEmail: ${{ github.event.pull_request.user.login }}
+        
 
   # Step 8: Upload RetireJS Report
     - name: Upload RetireJS Report
