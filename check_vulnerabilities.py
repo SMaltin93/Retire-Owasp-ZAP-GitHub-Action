@@ -2,55 +2,57 @@ import json
 import os
 import requests
 
+
 def check_vulnerabilities(report_file):
     with open(report_file, 'r') as file:
         data = json.load(file)
-        
+
+        vulnerabilities_found = []
         for item in data['data']:
             for result in item.get('results', []):
                 for vulnerability in result.get('vulnerabilities', []):
                     if vulnerability.get('severity') == 'medium':
-                        return True, {
+                        vulnerabilities_found.append({
                             "component": result.get("component", "Unknown Component"),
+                            "version": result.get("version", "Unknown Version"),
                             "severity": vulnerability.get("severity", "Unknown Severity"),
                             "summary": vulnerability.get("identifiers", {}).get("summary", "No Summary Provided"),
                             "detailed_summary": vulnerability.get("identifiers", {}).get("summary", ""), 
                             "info": vulnerability.get("info", []),
-                            "CVE": vulnerability.get("identifiers", {}).get("CVE", ["N/A"]),  # Handle missing CVE gracefully
-                            "bug": vulnerability.get("identifiers", {}).get("bug", "No Bug Info")
-                        }
+                            "CVE": vulnerability.get("identifiers", {}).get("CVE", ["N/A"]),  # Handle missing 
+                            "bug": vulnerability.get("identifiers", {}).get("bug", "No Bug Info"),
+                            "cwe": vulnerability.get("cwe", [])
+                        })
+                    if len(vulnerabilities_found) == 2:  # Get only the first two vulnerabilities
+                        return True, vulnerabilities_found
+
     return False, None
 
-def send_slack_message(slack_webhook, details):
-    author = os.getenv('Author', 'Unknown Author')
-    repository = os.getenv('Repository', 'Unknown Repository')
-    branch = os.getenv('Branch', 'Unknown Branch')
-    author_email = os.getenv('AuthorEmail', 'Unknown Email')
 
-    # Construct a more detailed Slack message
-    slack_message = {
-        "text": (
-            f":rotating_light: *Medium severity vulnerability found in {details['component']}*.\n"
-            f"*Summary:* {details['detailed_summary']}\n"
-            f"*CVE:* {', '.join(details['CVE'])}\n"
-            f"*Bug:* {details['bug']}\n"
-            f"*Info:* {', '.join(details['info'])}\n"
-            f"*Author:* {author}\n"
-            f"*Author Email:* {author_email}\n"
-            f"*Repository:* {repository}\n"
-            f"*Branch:* {branch}"
+def send_slack_message(slack_webhook, vulnerabilities):
+    slack_webhook_url = slack_webhook
+    slack_message = {"text": ":rotating_light: *Medium severity vulnerabilities found!* \n"}
+
+    for vuln in vulnerabilities:
+        slack_message["text"] += (
+            f"\n*Component:* {vuln['component']} (Version: {vuln['version']})"
+            f"\n*Severity:* {vuln['severity']}"
+            f"\n*Summary:* {vuln['summary']}"
+            f"\n*CVE:* {', '.join(vuln['CVE'])}"
+            f"\n*Bug:* {vuln['bug']}"
+            f"\n*CWE:* {', '.join(vuln['cwe'])}"
+            f"\n*More Info:* {', '.join(vuln['info'])}\n"
         )
-    }
-    response = requests.post(slack_webhook, json=slack_message)
+
+    response = requests.post(slack_webhook_url, json=slack_message)
     return response.status_code
 
 
 if __name__ == "__main__":
     report_file = 'retirejs-report.json'
     slack_webhook = os.environ['SLACK_WEBHOOK']
-    
-    is_vulnerable, details = check_vulnerabilities(report_file)
+    is_vulnerable, vulnerabilities = check_vulnerabilities(report_file)
     if is_vulnerable:
-        send_slack_message(slack_webhook, details)
+        send_slack_message(slack_webhook, vulnerabilities)
     else:
         print('No medium severity vulnerabilities found.')
