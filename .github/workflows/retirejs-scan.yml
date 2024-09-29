@@ -19,7 +19,8 @@ jobs:
       with:
         node-version: '20'
     
-
+    - name: Install dependencies
+      uses: bahmutov/npm-install@v1
     # Install and run RetireJS scan
     - name: Install RetireJS
       run: npm install -g retire
