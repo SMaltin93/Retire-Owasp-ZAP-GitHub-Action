@@ -19,16 +19,13 @@ jobs:
       with:
         node-version: '20'
     
-    # Install project dependencies
-    - name: Install dependencies
-      run: npm install --force
 
     # Install and run RetireJS scan
     - name: Install RetireJS
       run: npm install -g retire
 
     - name: Run RetireJS Scan
-      run: retire --outputformat json --outputpath retirejs-report.json --verbose
+      run: retire --outputformat json --outputpath retirejs-report.json --path . --verbose
 
     # Upload RetireJS report
     - name: Upload RetireJS Report
