@@ -137,11 +137,13 @@ jobs:
       run: |
         if grep -q '"severity": "medium"' retirejs-report.json; then
           echo "::error::Medium vulnerability detected by RetireJS!";
-          curl -X POST -H 'Content-type: application/json' --data \
-          '{"text":":rotating_light: *Medium vulnerability detected!* \n*Committer:* ${{ github.actor }} \n*Repository:* ${{ github.repository }} \n*Vulnerability Details:* $(cat retirejs-report.json)"}' \
-          ${{ secrets.SLACK_WEBHOOK_URL }};
+          curl -X POST -H 'Content-type: application/json' \
+        --data '{"text":"medium vulnerability"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}
           exit 1;
         else
-          echo "No vulnerabilities found in RetireJS report.";
+          echo "curl -X POST -H 'Content-type: application/json' \ 
+        --data '{"text":"No medium vulnerabilities found in RetireJS report."}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }}";
         fi
 
