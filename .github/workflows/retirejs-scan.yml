@@ -114,6 +114,13 @@ jobs:
       run: retire --outputformat json --outputpath retirejs-report.json --verbose --exitwith 0
 
 
+    - name: Scan has been completed
+      run: |
+        curl -X POST -H 'Content-type: application/json' \
+        --data '{"text":"Scan has been completed"}' \
+        ${{ secrets.SLACK_WEBHOOK_URL }}
+    
+
     - name: Upload RetireJS Report
       uses: actions/upload-artifact@v4
       with:
@@ -129,13 +136,12 @@ jobs:
     - name: Check RetireJS Report for Vulnerabilities
       run: |
         if grep -q '"severity": "medium"' retirejs-report.json; then
-          echo "::error::medium vulnerability detected by RetireJS!";
-          echo "Sending alert to Slack...";
+          echo "::error::Medium vulnerability detected by RetireJS!";
           curl -X POST -H 'Content-type: application/json' --data \
-          '{"text":":rotating_light: *medium vulnerability detected!* \n*Committer:* ${{ github.actor }} \n*Repository:* ${{ github.repository }} \n*Vulnerability Details:* $(cat retirejs-report.json)"}' \
+          '{"text":":rotating_light: *Medium vulnerability detected!* \n*Committer:* ${{ github.actor }} \n*Repository:* ${{ github.repository }} \n*Vulnerability Details:* $(cat retirejs-report.json)"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }};
           exit 1;
         else
-          echo "No high vulnerabilities found in RetireJS report.";
+          echo "No vulnerabilities found in RetireJS report.";
         fi
-      
+
