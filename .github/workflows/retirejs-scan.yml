@@ -113,22 +113,21 @@ jobs:
     - name: Run RetireJS Scan
       run: retire --outputformat json --outputpath retirejs-report.json --verbose --exitwith 0
 
-    # check the JSON if it vulnerable medium or high
-    - name: Check RetireJS Report for Medium and High Vulnerabilities
-      run: |
-        if grep -q '"severity": "medium"' retirejs-report.json; then
-          echo "::error::Medium vulnerability detected by RetireJS!";
-          exit 1;
-        elif grep -q '"severity": "high"' retirejs-report.json; then
-          echo "::error::High vulnerability detected by RetireJS!";
-          exit 1;
-        else
-          echo "curl -X POST -H 'Content-type: application/json' --data '{\"text\":\"No medium or high vulnerabilities found in RetireJS report.\"}' ${{ secrets.SLACK_WEBHOOK }}";
-        fi
+   # Step 6: Set up Python for running your custom script
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
 
+ # Step 7: Run the Python script to check vulnerabilities and send the Slack message if found
+    - name: Run Vulnerability Check Python Script
+      run: python3 check_vulnerabilities.py
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  # Step 8: Upload RetireJS Report
     - name: Upload RetireJS Report
       uses: actions/upload-artifact@v4
       with:
         name: retirejs-report
         path: retirejs-report.json
-
