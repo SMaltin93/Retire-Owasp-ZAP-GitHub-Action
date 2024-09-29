@@ -114,23 +114,20 @@ jobs:
       run: retire --outputformat json --outputpath retirejs-report.json --verbose --exitwith 0
 
     - name: Check for Medium Vulnerabilities
-      uses: peter-evans/file-content-checker@v1
-      with:
-        file: retirejs-report.json
-        pattern: '"severity": "medium"'
-        flags: 'g'
-        fail-on-found: true  # Fail the job if the pattern is found
-        check: contains  # Checks if the file contains the pattern
-
-    - name: Send Slack Notification for Medium Vulnerabilities
-      if: failure()
       run: |
-        curl -X POST -H 'Content-type: application/json' --data \
-        '{"text":":rotating_light: *Medium vulnerability detected in RetireJS report!* \n*Committer:* ${{ github.actor }} \n*Repository:* ${{ github.repository }} \n"}' \
-        ${{ secrets.SLACK_WEBHOOK_URL }}
+        if grep -q '"severity": "medium"' retirejs-report.json; then
+          echo "::error::Medium vulnerability detected by RetireJS!";
+          curl -X POST -H 'Content-type: application/json' --data \
+          '{"text":":rotating_light: *Medium vulnerability detected in RetireJS report!* \n*Committer:* ${{ github.actor }} \n*Repository:* ${{ github.repository }} \n"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }};
+          exit 1;
+        else
+          echo "No medium vulnerabilities found in RetireJS report.";
+        fi
 
     - name: Upload RetireJS Report
       uses: actions/upload-artifact@v4
       with:
         name: retirejs-report
         path: retirejs-report.json
+
