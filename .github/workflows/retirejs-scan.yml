@@ -121,30 +121,21 @@ jobs:
         path: retirejs-report.json
 
 
+    # check if there a vulnurability send notification to slack  
+    # send the vulnurbility name , nand who pushed or commited and 
+    # send the name of vulnurbility and the summary of the vulnurbility
 
 
-
-     # wait until https://smaltin93.github.io/Retire-Owasp-ZAP-GitHub-Action/ is up with the new version
-    - name: Wait for the site to be up
-      run: sleep 10
-
-    - name: Remove conflicting packages
+    - name: Check RetireJS Report for Vulnerabilities
       run: |
-        sudo apt-get remove -y containerd.io
-        
-
-    - name: Set up Docker
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y docker.io
-
-    - name: Docker Login
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-
-
-    #Run OWASP ZAP scan
-    - name: OWASP ZAP Baseline Scan
-      run: |
-        docker run -v ${PWD}:/zap/wrk/ --user root -t zaproxy/zap-stable zap-baseline.py \
-        -t https://smaltin93.github.io/Retire-Owasp-ZAP-GitHub-Action/ -r zap-report.html -x zap-report.xml -I
+        if grep -q '"severity": "medium"' retirejs-report.json; then
+          echo "::error::medium vulnerability detected by RetireJS!";
+          echo "Sending alert to Slack...";
+          curl -X POST -H 'Content-type: application/json' --data \
+          '{"text":":rotating_light: *medium vulnerability detected!* \n*Committer:* ${{ github.actor }} \n*Repository:* ${{ github.repository }} \n*Vulnerability Details:* $(cat retirejs-report.json)"}' \
+          ${{ secrets.SLACK_WEBHOOK_URL }};
+          exit 1;
+        else
+          echo "No high vulnerabilities found in RetireJS report.";
+        fi
+      
