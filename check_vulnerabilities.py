@@ -14,6 +14,7 @@ def check_vulnerabilities(report_file):
                             "component": result.get("component", "Unknown Component"),
                             "severity": vulnerability.get("severity", "Unknown Severity"),
                             "summary": vulnerability.get("identifiers", {}).get("summary", "No Summary Provided"),
+                            "detailed_summary": vulnerability.get("identifiers", {}).get("summary", ""), 
                             "info": vulnerability.get("info", []),
                             "CVE": vulnerability.get("identifiers", {}).get("CVE", ["N/A"]),  # Handle missing CVE gracefully
                             "bug": vulnerability.get("identifiers", {}).get("bug", "No Bug Info")
@@ -30,7 +31,7 @@ def send_slack_message(slack_webhook, details):
     slack_message = {
         "text": (
             f":rotating_light: *Medium severity vulnerability found in {details['component']}*.\n"
-            f"*Summary:* {details['summary']}\n"
+            f"*Summary:* {details['detailed_summary']}\n"
             f"*CVE:* {', '.join(details['CVE'])}\n"
             f"*Bug:* {details['bug']}\n"
             f"*Info:* {', '.join(details['info'])}\n"
