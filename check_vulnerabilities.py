@@ -29,10 +29,16 @@ def check_vulnerabilities(report_file):
     return False, None
 
 
-def send_slack_message(slack_webhook, vulnerabilities):
+def send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, author_email):
     slack_webhook_url = slack_webhook
-    slack_message = {"text": ":rotating_light: *Medium severity vulnerabilities found!* \n"}
-
+    slack_message = {"text": f"rotating_light: *Severity Vulnerabilities Found* :rotating_light:\n"
+                            f"*Author:* {author}\n"
+                            f"*Repository:* {repository}\n"
+                            f"*Branch:* {branch}\n"
+                            f"*Author Email:* {author_email}\n"
+                            f"*Vulnerabilities Found:*"}
+    
+    
     for vuln in vulnerabilities:
         slack_message["text"] += (
             f"\n*Component:* {vuln['component']} (Version: {vuln['version']})"
@@ -43,6 +49,7 @@ def send_slack_message(slack_webhook, vulnerabilities):
             f"\n*CWE:* {', '.join(vuln['cwe'])}"
             f"\n*More Info:* {', '.join(vuln['info'])}\n"
         )
+        
 
     response = requests.post(slack_webhook_url, json=slack_message)
     return response.status_code
@@ -51,8 +58,19 @@ def send_slack_message(slack_webhook, vulnerabilities):
 if __name__ == "__main__":
     report_file = 'retirejs-report.json'
     slack_webhook = os.environ['SLACK_WEBHOOK']
+    # # add author and  Author: ${{ github.actor }}
+    #     Repository: ${{ github.repository }}
+    #     Branch: ${{ github.ref }}
+    #     # author email
+    #     AuthorEmail: ${{ github.event.pull_request.user.login }}
+    author = os.environ.get('Author', 'Unknown Author')
+    repository = os.environ.get('Repository', 'Unknown Repository')
+    branch = os.environ.get('Branch', 'Unknown Branch')
+    author_email = os.environ.get('AuthorEmail', 'Unknown Email')
+    
+    
     is_vulnerable, vulnerabilities = check_vulnerabilities(report_file)
     if is_vulnerable:
-        send_slack_message(slack_webhook, vulnerabilities)
+        send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, author_email)
     else:
         print('No medium severity vulnerabilities found.')
