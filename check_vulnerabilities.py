@@ -10,22 +10,23 @@ def check_vulnerabilities(report_file):
             for result in item.get('results', []):
                 for vulnerability in result.get('vulnerabilities', []):
                     if vulnerability.get('severity') == 'medium':
-                        # Gather necessary details
                         return True, {
                             "component": result.get("component", "Unknown Component"),
                             "severity": vulnerability.get("severity", "Unknown Severity"),
                             "summary": vulnerability.get("identifiers", {}).get("summary", "No Summary Provided"),
+                            "info": vulnerability.get("info", []),
+                            "CVE": vulnerability.get("identifiers", {}).get("CVE", ["N/A"]),  # Handle missing CVE gracefully
+                            "bug": vulnerability.get("identifiers", {}).get("bug", "No Bug Info")
                         }
     return False, None
-
-
 
 def send_slack_message(slack_webhook, details):
     author = os.getenv('Author', 'Unknown Author')
     repository = os.getenv('Repository', 'Unknown Repository')
     branch = os.getenv('Branch', 'Unknown Branch')
     author_email = os.getenv('AuthorEmail', 'Unknown Email')
-    
+
+    # Construct a more detailed Slack message
     slack_message = {
         "text": (
             f":rotating_light: *Medium severity vulnerability found in {details['component']}*.\n"
@@ -41,6 +42,7 @@ def send_slack_message(slack_webhook, details):
     }
     response = requests.post(slack_webhook, json=slack_message)
     return response.status_code
+
 
 if __name__ == "__main__":
     report_file = 'retirejs-report.json'
