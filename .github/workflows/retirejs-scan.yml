@@ -111,5 +111,16 @@ jobs:
       run: npm install -g retire
 
     - name: Run RetireJS Scan
-      run: retire --path . --outputformat json --outputpath retirejs-report.json --verbose
+      run: retire --path . --outputformat html --outputpath retirejs-report.html --verbose
+
+
+    - name: Upload RetireJS Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: retirejs-report
+        path: retirejs-report.html
+
+  
+
+    
 
