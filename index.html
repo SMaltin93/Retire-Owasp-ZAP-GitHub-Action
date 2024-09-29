@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JavaScript Web App</title>
-    <!-- Vulnerable version of jQuery -->
-    <script src="https://code.jquery.com/jquery-1.4.0.min.js"></script>
-
 </head>
 <body>
     <h1>Welcome to My JavaScript App!</h1>
     <p id="message">Loading message...</p>
 
-    
-    <!-- Link to the JavaScript file --->
+    <!-- Vulnerable section 
+    <h1>Search Result:</h1>
+    <p id="result"></p>
+    <script>
+        const query = new URLSearchParams(window.location.search);
+        document.getElementById('result').innerHTML = query.get('search'); // Vulnerable to XSS
+    </script> -->
+
+    <!-- Link to the JavaScript file -->
     <script src="app.js"></script>
 </body>
 </html>
