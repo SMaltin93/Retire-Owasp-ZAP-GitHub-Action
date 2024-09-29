@@ -13,10 +13,14 @@
     <h1>Search Result:</h1>
     <p id="result"></p>
     <script>
+        // Vulnerable to XSS
         const query = new URLSearchParams(window.location.search);
-        document.getElementById('result').innerHTML = query.get('search'); // Vulnerable to XSS
+        const search = query.get('search');
+        if (search) {
+            // Directly insert user-controlled input into the page (this is highly dangerous)
+            document.getElementById('result').innerHTML = search;
+        }
     </script> 
-
     <!-- Link to the JavaScript file -->
     <script src="app.js"></script>
 </body>
