@@ -133,17 +133,17 @@ jobs:
     # send the name of vulnurbility and the summary of the vulnurbility
 
 
-    - name: Check RetireJS Report for Vulnerabilities
+    - name: Check content of RetireJS Report
       run: |
         if grep -q '"severity": "medium"' retirejs-report.json; then
           echo "::error::Medium vulnerability detected by RetireJS!";
           curl -X POST -H 'Content-type: application/json' \
-        --data '{"text":"medium vulnerability"}' \
+          --data '{"text":"Medium vulnerability detected by RetireJS"}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}
           exit 1;
         else
-          echo "curl -X POST -H 'Content-type: application/json' \ 
-        --data '{"text":"No medium vulnerabilities found in RetireJS report."}' \
+          echo "curl -X POST -H 'Content-type: application/json' \
+          --data '{"text":"No medium vulnerabilities found in RetireJS report."}' \
           ${{ secrets.SLACK_WEBHOOK_URL }}";
         fi
 
