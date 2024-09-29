@@ -45,8 +45,6 @@ def send_slack_message(slack_webhook, details):
 if __name__ == "__main__":
     report_file = 'retirejs-report.json'
     slack_webhook = os.environ['SLACK_WEBHOOK']
-    author_name = os.environ['AUTHOR_NAME']
-    author_email = os.environ['AUTHOR_EMAIL']
     
     is_vulnerable, details = check_vulnerabilities(report_file)
     if is_vulnerable:
