@@ -28,7 +28,7 @@ jobs:
       run: npm install -g retire
 
     - name: Run RetireJS Scan
-      run: retire --outputformat json --outputpath retirejs-report.json --path . --verbose
+      run: retire --outputformat json --outputpath retirejs-report.json --path . --verbose --debug
 
     # Upload RetireJS report
     - name: Upload RetireJS Report
