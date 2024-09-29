@@ -19,9 +19,6 @@ jobs:
       with:
         node-version: '20'
     
-    # Install project dependencies
-    - name: Install dependencies
-      run: npm install
 
     # Install and run RetireJS scan
     - name: Install RetireJS
