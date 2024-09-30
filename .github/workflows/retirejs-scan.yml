@@ -59,7 +59,7 @@ jobs:
   push-code:
     needs: security-scan  # Only run this job if the security-scan job succeeds
     runs-on: ubuntu-latest
-    if: failure()  
+    if: failure()   
 
     steps:
     - name: Checkout Code
@@ -69,17 +69,11 @@ jobs:
 
     - name: Reset to the last commit
       run: |
+        upload-artifact retirejs-report.json
         git reset --hard HEAD
         git push origin test-sam --force
-        
+    
+    
 
-
-        
-  # Step 8: Upload RetireJS Report
-    - name: Upload RetireJS Report
-      uses: actions/upload-artifact@v4
-      with:
-        name: retirejs-report
-        path: retirejs-report.json
 
  

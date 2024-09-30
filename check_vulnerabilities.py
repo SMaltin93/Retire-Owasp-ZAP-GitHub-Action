@@ -11,7 +11,7 @@ def check_vulnerabilities(report_file):
         for item in data['data']:
             for result in item.get('results', []):
                 for vulnerability in result.get('vulnerabilities', []):
-                    if vulnerability.get('severity') == 'medium':
+                    if vulnerability.get('severity') == 'medium' | vulnerability.get('severity') == 'high':
                         vulnerabilities_found.append({
                             "component": result.get("component", "Unknown Component"),
                             "version": result.get("version", "Unknown Version"),
@@ -71,9 +71,9 @@ if __name__ == "__main__":
     if is_vulnerable:
         send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, commit)
         # dont allow the pipeline to continue if vulnerabilities are found
-        print('Medium severity vulnerabilities found. Exiting...')
+        print('Vulnerabilities found. Exiting...')
         exit(1)
     else:
-        print('No medium severity vulnerabilities found.')
+        print('No severity vulnerabilities found.')
         # allow the pipeline to continue
         exit(0)
