@@ -65,7 +65,7 @@ jobs:
 
 # Push to GitHub job
   push-code:
-    needs: security-scan  # Only run this job if the security-scan job succeeds
+    needs: security-scan  # Only run this job if the security-scan job succeeds ..
     runs-on: ubuntu-latest
     if: failure()   
 
