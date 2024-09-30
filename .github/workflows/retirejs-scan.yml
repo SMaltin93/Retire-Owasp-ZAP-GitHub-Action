@@ -60,12 +60,16 @@ jobs:
         Repository: ${{ github.repository }}
         Branch: ${{ github.ref }}
         Commit: ${{ github.sha }}
-
-  
-
+  # tag the commit with the scan results
+    - name: Tag the commit with the scan results
+      if: success()
+      run: |
+        git tag -f safe-commit
+        git push origin safe-commit --force
+ 
 # Push to GitHub job
   push-code:
-    needs: security-scan  # Only run this job if the security-scan job succeeds
+    needs: security-scan  # Only run this job if the security-scan job succeeds ..
     runs-on: ubuntu-latest
     if: failure()   
 
@@ -77,7 +81,7 @@ jobs:
 
     - name: Reset to the last commit
       run: |
-        git reset --hard HEAD^
+        git reset --hard safe-commit 
         git push origin test-sam --force
 
 
