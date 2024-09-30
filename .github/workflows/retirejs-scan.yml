@@ -77,7 +77,7 @@ jobs:
 
     - name: Reset to the last commit
       run: |
-        git reset --hard HEAD
+        git reset --hard HEAD^
         git push origin test-sam --force
 
 
