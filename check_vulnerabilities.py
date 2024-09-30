@@ -29,7 +29,7 @@ def check_vulnerabilities(report_file):
 
 def send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, commit):
     slack_webhook_url = slack_webhook
-    slack_message = {"text": f"rotating_light: *Severity Vulnerabilities Found* :rotating_light:\n"
+    slack_message = {"text": f":rotating_light: *Severity Vulnerabilities Found* :rotating_light:\n"
                             f"*Author:* {author}\n"
                             f"*Repository:* {repository}\n"
                             f"*Branch:* {branch}\n"
