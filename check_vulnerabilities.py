@@ -14,9 +14,7 @@ def check_vulnerabilities(report_file):
                     if vulnerability.get('severity') == 'medium':
                         vulnerabilities_found.append({
                             "component": result.get("component", "Unknown Component"),
-                            "version": result.get("version", "Unknown Version"),
                             "severity": vulnerability.get("severity", "Unknown Severity"),
-                            "summary": vulnerability.get("identifiers", {}).get("summary", "No Summary Provided"),
                             "detailed_summary": vulnerability.get("identifiers", {}).get("summary", ""), 
                             "info": vulnerability.get("info", []),
                             "CVE": vulnerability.get("identifiers", {}).get("CVE", ["N/A"]),  # Handle missing 
@@ -25,17 +23,16 @@ def check_vulnerabilities(report_file):
                         })
                     if len(vulnerabilities_found) == 2:  # Get only the first two vulnerabilities
                         return True, vulnerabilities_found
-
     return False, None
 
 
-def send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, author_email):
+def send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, commit):
     slack_webhook_url = slack_webhook
     slack_message = {"text": f"rotating_light: *Severity Vulnerabilities Found* :rotating_light:\n"
                             f"*Author:* {author}\n"
                             f"*Repository:* {repository}\n"
                             f"*Branch:* {branch}\n"
-                            f"*Author Email:* {author_email}\n"
+                            f"*Commit:* {commit}\n"
                             f"*Vulnerabilities Found:*"}
     
     
@@ -58,19 +55,15 @@ def send_slack_message(slack_webhook, vulnerabilities, author, repository, branc
 if __name__ == "__main__":
     report_file = 'retirejs-report.json'
     slack_webhook = os.environ['SLACK_WEBHOOK']
-    # # add author and  Author: ${{ github.actor }}
-    #     Repository: ${{ github.repository }}
-    #     Branch: ${{ github.ref }}
-    #     # author email
-    #     AuthorEmail: ${{ github.event.pull_request.user.login }}
-    author = os.environ.get('Author', 'Unknown Author')
-    repository = os.environ.get('Repository', 'Unknown Repository')
-    branch = os.environ.get('Branch', 'Unknown Branch')
-    author_email = os.environ.get('AuthorEmail', 'Unknown Email')
+
+    author = os.environ.get('Author')
+    repository = os.environ.get('Repository')
+    branch = os.environ.get('Branch')
+    commit = os.environ.get('Commit')
     
     
     is_vulnerable, vulnerabilities = check_vulnerabilities(report_file)
     if is_vulnerable:
-        send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, author_email)
+        send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, commit)
     else:
         print('No medium severity vulnerabilities found.')

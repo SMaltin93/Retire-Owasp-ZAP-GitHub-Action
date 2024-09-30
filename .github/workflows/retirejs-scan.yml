@@ -1,91 +1,3 @@
-# name: RetireJS and OWASP ZAP Vulnerability Scan
-
-# on:
-#   push:
-#     branches:
-#       - test-sam
-#   pull_request:
-
-# jobs:
-#   security-scan:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#     - name: Checkout Code
-#       uses: actions/checkout@v3
-
-#     - name: Set up Node.js
-#       uses: actions/setup-node@v3
-#       with:
-#         node-version: '20'
-    
-#     - name: Install dependencies
-#       run: npm install
-
-
-#     - name: Install RetireJS
-#       run: npm install -g retire
-
-#     - name: Run RetireJS Scan
-#       run: retire --outputformat json --outputpath retirejs-report.json  --verbose
-
-#     # Upload RetireJS report
-#     - name: Upload RetireJS Report
-#       uses: actions/upload-artifact@v4
-#       with:
-#         name: retirejs-report
-#         path: retirejs-report.json
-
-#     # Check RetireJS report for high vulnerabilities
-#     - name: Check RetireJS Report for High Vulnerabilities
-#       run: |
-#         if grep -q '"severity": "high"' retirejs-report.json; then
-#           echo "::error::High vulnerability detected by RetireJS!";
-#           exit 1;
-#         else
-#           echo "No high vulnerabilities found in RetireJS report.";
-#         fi
-
-#     - name: Remove conflicting packages
-#       run: |
-#         sudo apt-get remove -y containerd.io
-
-#     # Set up Docker
-#     - name: Set up Docker
-#       run: |
-#         sudo apt-get update
-#         sudo apt-get install -y docker.io
-
-#     # Docker Login to pull OWASP ZAP image
-#     - name: Docker Login
-#       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-#     # Run OWASP ZAP scan
-#     - name: OWASP ZAP Baseline Scan
-#       run: |
-#         docker run -v ${PWD}:/zap/wrk/ --user root -t zaproxy/zap-stable zap-baseline.py \
-#         -t https://smaltin93.github.io/Retire-Owasp-ZAP-GitHub-Action/ -r zap-report.html -x zap-report.xml -I
-
-#     # Check ZAP report for high vulnerabilities
-#     - name: Check ZAP Report for High Vulnerabilities
-#       run: |
-#         if grep -q '<riskcode>3</riskcode>' zap-report.xml; then
-#           echo "::error::High vulnerability detected by OWASP ZAP!";
-#           exit 1;
-#         else
-#           echo "No high vulnerabilities found in ZAP report.";
-#         fi
-  
-#     # Upload both RetireJS and ZAP reports
-#     - name: Upload RetireJS and ZAP Reports
-#       uses: actions/upload-artifact@v4
-#       with:
-#         name: security-reports
-#         path: |
-#           retirejs-report.json
-#           zap-report.html
-#           zap-report.xml
-
 
 
 name: RetireJS Scan
@@ -94,7 +6,7 @@ on:
   push:
     branches:
       - test-sam
-  pull_request:
+ # pull_request:
 
 jobs:
   security-scan:
@@ -102,16 +14,16 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v4 
 
     - name: Install dependencies
-      uses: bahmutov/npm-install@v1
+      uses: npm install # this will install all the dependencies in package.json
 
     - name: Install RetireJS
       run: npm install -g retire
 
     - name: Run RetireJS Scan
-      run: retire --outputformat json --outputpath retirejs-report.json --verbose --exitwith 0
+      run: retire --outputformat json --outputpath retirejs-report.json --verbose --exitwith 0 
 
    # Step 6: Set up Python for running your custom script
     - name: Set up Python
@@ -128,13 +40,12 @@ jobs:
  # Step 7: Run the Python script to check vulnerabilities and send the Slack message if found
     - name: Run Vulnerability Check Python Script
       run: python3 check_vulnerabilities.py
-      env:
+      env: # this will set the environment variables for the script 
         SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         Author: ${{ github.actor }}
         Repository: ${{ github.repository }}
         Branch: ${{ github.ref }}
-        # author email
-        AuthorEmail: ${{ github.event.pull_request.user.login }}
+        Commit: ${{ github.sha }}
         
 
   # Step 8: Upload RetireJS Report
