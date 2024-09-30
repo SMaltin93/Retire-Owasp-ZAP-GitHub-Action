@@ -66,6 +66,9 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
+
+    - name: Check if RetireJS Report Exists
+      run: ls -la retirejs-report.json
         # upload the report even if the scan fails
     - name: Upload RetireJS Report
       if: always()
