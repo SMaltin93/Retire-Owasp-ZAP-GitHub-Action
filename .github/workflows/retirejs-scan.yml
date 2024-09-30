@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - test-sam
-  pull_request: 
+ #pull_request: # 
 
 jobs:
   security-scan:
@@ -17,7 +17,7 @@ jobs:
       uses: actions/checkout@v4 
 
     - name: Install dependencies
-      uses: npm install # this will install all the dependencies in package.json
+      uses: bahmutov/npm-install@v1
 
     - name: Install RetireJS
       run: npm install -g retire
