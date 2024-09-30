@@ -41,7 +41,7 @@ def send_slack_message(slack_webhook, vulnerabilities, author, repository, branc
         slack_message["text"] += (
             f"\n*Component:* {vuln['component']} (Version: {vuln['version']})"
             f"\n*Severity:* {vuln['severity']}"
-            f"\n*Summary:* {vuln['summary']}"
+            f"\n*Summary:* {vuln['detailed_summary']}"
             f"\n*CVE:* {', '.join(vuln['CVE'])}"
             f"\n*Bug:* {vuln['bug']}"
             f"\n*CWE:* {', '.join(vuln['cwe'])}"
