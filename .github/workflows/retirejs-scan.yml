@@ -27,7 +27,7 @@ jobs:
       # run scan and upload the report
     - name: Run RetireJS Scan
       id: retirejs-scan
-      run: retire --outputformat json --outputpath retirejs-report.json --verbose 
+      run: retire --outputformat json --outputpath retirejs-report.json --verbose --exitwith 0
         
 
       # upload the report directly to the repository

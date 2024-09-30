@@ -29,11 +29,13 @@ def check_vulnerabilities(report_file):
 
 def send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, commit):
     slack_webhook_url = slack_webhook
+    commit_url = f"https://github.com/SMaltin93/Retire-Owasp-ZAP-GitHub-Action/commit/{commit}"
     slack_message = {"text": f":rotating_light: *Severity Vulnerabilities Found* :rotating_light:\n"
                             f"*Author:* {author}\n"
                             f"*Repository:* {repository}\n"
                             f"*Branch:* {branch}\n"
                             f"*Commit:* {commit}\n"
+                            f"*Click here to view the commit:* {commit_url}\n"
                             f"*Vulnerabilities Found:*"}
     
     
