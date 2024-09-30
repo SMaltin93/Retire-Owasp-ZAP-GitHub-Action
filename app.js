@@ -1,5 +1,5 @@
 // Update the message in the 'message' <p> element
-document.getElementById('message').textContent = ' good commit';
+document.getElementById('message').textContent = 'bad commit again again';
 
 // Add an event listener that triggers an alert when the user clicks on the page
 document.body.addEventListener('click', function() {
