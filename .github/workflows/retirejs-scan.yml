@@ -65,7 +65,7 @@ jobs:
 
 # Push to GitHub job
   push-code:
-    needs: security-scan  # Only run this job if the security-scan job succeeds ..
+    needs: security-scan  # Only run this job if the security-scan job succeeds
     runs-on: ubuntu-latest
     if: failure()   
 
@@ -73,7 +73,7 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0
+        fetch-depth: 0 
 
     - name: Reset to the last commit
       run: |
