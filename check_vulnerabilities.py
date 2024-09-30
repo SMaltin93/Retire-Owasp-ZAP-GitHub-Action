@@ -53,6 +53,8 @@ def send_slack_message(slack_webhook, vulnerabilities, author, repository, branc
     return response.status_code
 
 
+
+
 if __name__ == "__main__":
     report_file = 'retirejs-report.json'
     slack_webhook = os.environ['SLACK_WEBHOOK']

@@ -25,7 +25,6 @@ jobs:
     - name: Run RetireJS Scan
       run: |
         retire --outputformat json --outputpath retirejs-report.json --verbose 
-        upload-artifact retirejs-report.json
         
 
       # upload the report directly to the repository
@@ -60,3 +59,5 @@ jobs:
       with:
         name: retirejs-report
         path: retirejs-report.json
+
+ 
