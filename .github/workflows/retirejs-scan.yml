@@ -67,17 +67,18 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: upload report
-      uses: actions/upload-artifact@v4
-      with:
-        name: retirejs-report
-        path: retirejs-report.json
-
     - name: Reset to the last commit
       run: |
         git reset --hard HEAD
         git push origin test-sam --force
 
+    # upload the report even if the scan fails
+    - name: Upload RetireJS Report
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: retirejs-report
+        path: retirejs-report.json
 
   
     
