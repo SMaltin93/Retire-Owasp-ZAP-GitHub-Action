@@ -8,6 +8,9 @@ on:
       - test-sam
  #pull_request: # 
 
+permissions:
+  contents: write
+
 jobs:
   security-scan:
     runs-on: ubuntu-latest
