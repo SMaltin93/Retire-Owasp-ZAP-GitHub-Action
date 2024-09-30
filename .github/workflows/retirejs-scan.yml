@@ -56,7 +56,7 @@ jobs:
   push-code:
     needs: security-scan  # Only run this job if the security-scan job succeeds
     runs-on: ubuntu-latest
-    if: success()  # This condition ensures this step only runs if all previous steps were successful
+    if: failure()  
 
     steps:
     - name: Checkout Code
@@ -64,11 +64,9 @@ jobs:
 
     - name: Push Code
       run: |
-        git config --global user.email "
-        git config --global user.name "GitHub Actions"
-        git add .
-        git commit -m "RetireJS Scan Report"
-        git push
+        git fetch origin
+        git reset --hard HEAD^
+        git push origin test-sam --force
 
 
         
