@@ -23,8 +23,8 @@ jobs:
       run: npm install -g retire
       # run scan and upload the report
     - name: Run RetireJS Scan
-      run: |
-        retire --outputformat json --outputpath retirejs-report.json --verbose 
+      id: retirejs-scan
+      run: retire --outputformat json --outputpath retirejs-report.json --verbose --exitwith 0
         
 
       # upload the report directly to the repository

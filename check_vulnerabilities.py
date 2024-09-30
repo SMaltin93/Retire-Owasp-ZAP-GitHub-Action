@@ -68,5 +68,10 @@ if __name__ == "__main__":
     is_vulnerable, vulnerabilities = check_vulnerabilities(report_file)
     if is_vulnerable:
         send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, commit)
+        # dont allow the pipeline to continue if vulnerabilities are found
+        print('Medium severity vulnerabilities found. Exiting...')
+        exit(1)
     else:
         print('No medium severity vulnerabilities found.')
+        # allow the pipeline to continue
+        exit(0)
