@@ -23,7 +23,7 @@ jobs:
       run: npm install -g retire
 
     - name: Run RetireJS Scan
-      run: retire --outputformat json --outputpath retirejs-report.json --verbose --exitwith 0 
+      run: retire --outputformat json --outputpath retirejs-report.json --verbose 
 
    # Step 6: Set up Python for running your custom script
     - name: Set up Python
