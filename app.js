@@ -1,5 +1,5 @@
 // Update the message in the 'message' <p> element
-document.getElementById('message').textContent = 'Hello, World! FROM jquery';
+document.getElementById('message').textContent = 'Hello, World! FROM jquery again';
 
 // Add an event listener that triggers an alert when the user clicks on the page
 document.body.addEventListener('click', function() {
