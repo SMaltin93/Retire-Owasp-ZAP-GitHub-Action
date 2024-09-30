@@ -26,10 +26,8 @@ jobs:
       run: npm install -g retire
       # run scan and upload the report
     - name: Run RetireJS Scan
-      id: retirejs-scan
       run: |
         retire --outputformat json --outputpath retirejs-report.json --verbose --exitwith 0
-        upload-artifact retirejs-report.json
 
       # upload the report directly to the repository
 
@@ -46,6 +44,13 @@ jobs:
         python3 -m pip install --upgrade pip
         python3 -m pip install requests
 
+  # upload the report directly to the repository
+    - name: Upload RetireJS Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: retirejs-report
+        path: retirejs-report.json
+
  # Step 7: Run the Python script to check vulnerabilities and send the Slack message if found
     - name: Run Vulnerability Check Python Script
       run: python3 check_vulnerabilities.py
@@ -55,6 +60,8 @@ jobs:
         Repository: ${{ github.repository }}
         Branch: ${{ github.ref }}
         Commit: ${{ github.sha }}
+
+  
 
 # Push to GitHub job
   push-code:
@@ -68,15 +75,13 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Check if RetireJS Report Exists
-      run: ls -la retirejs-report.json
-        
-
     - name: Reset to the last commit
       run: |
         git reset --hard HEAD
         git push origin test-sam --force
 
+
+  
     
 
   

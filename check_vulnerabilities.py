@@ -26,7 +26,7 @@ def check_vulnerabilities(report_file):
                         return True, vulnerabilities_found
     return False, None
 
-
+ 
 def send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, commit):
     slack_webhook_url = slack_webhook
     commit_url = f"https://github.com/SMaltin93/Retire-Owasp-ZAP-GitHub-Action/commit/{commit}"
