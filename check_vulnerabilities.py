@@ -72,6 +72,9 @@ if __name__ == "__main__":
         send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, commit)
         # dont allow the pipeline to continue if vulnerabilities are found
         print('Vulnerabilities found. Exiting...')
+        # upload the report as an artifact
+        os.system(f"echo 'Uploading report as artifact...'")
+        os.system(f"mv {report_file} retirejs-report.json")
         exit(1)
     else:
         print('No severity vulnerabilities found.')
