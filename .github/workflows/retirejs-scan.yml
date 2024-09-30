@@ -21,9 +21,15 @@ jobs:
 
     - name: Install RetireJS
       run: npm install -g retire
-
+      # run scan and upload the report
     - name: Run RetireJS Scan
-      run: retire 
+      run: |
+        retire --outputformat json --outputpath retirejs-report.json --verbose 
+        upload-artifact retirejs-report.json
+        
+
+      # upload the report directly to the repository
+
 
    # Step 6: Set up Python for running your custom script
     - name: Set up Python
