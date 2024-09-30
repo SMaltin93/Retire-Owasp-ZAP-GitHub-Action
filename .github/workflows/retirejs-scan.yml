@@ -52,21 +52,21 @@ jobs:
         Branch: ${{ github.ref }}
         Commit: ${{ github.sha }}
 
-# # Push to GitHub job
-#   push-code:
-#     needs: security-scan  # Only run this job if the security-scan job succeeds
-#     runs-on: ubuntu-latest
-#     if: failure()  
+# Push to GitHub job
+  push-code:
+    needs: security-scan  # Only run this job if the security-scan job succeeds
+    runs-on: ubuntu-latest
+    if: failure()  
 
-#     steps:
-#     - name: Checkout Code
-#       uses: actions/checkout@v4
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-#     - name: Push Code
-#       run: |
-#         git fetch origin
-#         git reset --hard HEAD^
-#        git push origin test-sam --force
+    - name: Push Code
+      run: |
+        git fetch origin
+        git reset --hard HEAD^
+        git push origin test-sam --force
 
 
         
