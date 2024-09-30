@@ -14,6 +14,7 @@ def check_vulnerabilities(report_file):
                     if vulnerability.get('severity') == 'medium':
                         vulnerabilities_found.append({
                             "component": result.get("component", "Unknown Component"),
+                            "version": result.get("version", "Unknown Version"),
                             "severity": vulnerability.get("severity", "Unknown Severity"),
                             "detailed_summary": vulnerability.get("identifiers", {}).get("summary", ""), 
                             "info": vulnerability.get("info", []),
