@@ -61,12 +61,14 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
-    - name: Push Code
+    - name: Reset to the last commit
       run: |
-        git fetch origin
-        git reset --hard HEAD^
+        git reset --hard HEAD
         git push origin test-sam --force
+        
 
 
         
