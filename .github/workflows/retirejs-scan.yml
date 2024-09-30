@@ -69,7 +69,6 @@ jobs:
 
     - name: Reset to the last commit
       run: |
-        upload-artifact retirejs-report.json
         git reset --hard HEAD
         git push origin test-sam --force
     
