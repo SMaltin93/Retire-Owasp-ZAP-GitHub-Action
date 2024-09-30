@@ -66,9 +66,9 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-        
+
     - name: upload report
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: retirejs-report
         path: retirejs-report.json
