@@ -27,8 +27,9 @@ jobs:
       # run scan and upload the report
     - name: Run RetireJS Scan
       id: retirejs-scan
-      run: retire --outputformat json --outputpath retirejs-report.json --verbose --exitwith 0
-        
+      run: |
+        retire --outputformat json --outputpath retirejs-report.json --verbose --exitwith 0
+        upload-artifact retirejs-report.json
 
       # upload the report directly to the repository
 
@@ -69,13 +70,7 @@ jobs:
 
     - name: Check if RetireJS Report Exists
       run: ls -la retirejs-report.json
-        # upload the report even if the scan fails
-    - name: Upload RetireJS Report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: retirejs-report
-        path: retirejs-report.json
+        
 
     - name: Reset to the last commit
       run: |
