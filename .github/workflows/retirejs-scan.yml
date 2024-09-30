@@ -24,7 +24,7 @@ jobs:
       # run scan and upload the report
     - name: Run RetireJS Scan
       id: retirejs-scan
-      run: retire --outputformat json --outputpath retirejs-report.json --verbose --exitwith 0
+      run: retire --outputformat json --outputpath retirejs-report.json --verbose 
         
 
       # upload the report directly to the repository
@@ -51,8 +51,27 @@ jobs:
         Repository: ${{ github.repository }}
         Branch: ${{ github.ref }}
         Commit: ${{ github.sha }}
-        
 
+# Push to GitHub job
+  push-code:
+    needs: security-scan  # Only run this job if the security-scan job succeeds
+    runs-on: ubuntu-latest
+    if: success()  # This condition ensures this step only runs if all previous steps were successful
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Push Code
+      run: |
+        git config --global user.email "
+        git config --global user.name "GitHub Actions"
+        git add .
+        git commit -m "RetireJS Scan Report"
+        git push
+
+
+        
   # Step 8: Upload RetireJS Report
     - name: Upload RetireJS Report
       uses: actions/upload-artifact@v4
