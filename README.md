@@ -1,1 +1,1 @@
-# Sam Retire-Owasp-ZAP-GitHub-Action
+# Sam Retire-Slack-GitHub-Action
