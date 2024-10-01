@@ -16,7 +16,7 @@ def check_vulnerabilities(report_file):
                     continue
                 vulnerabilities = result.get('vulnerabilities', []) 
                 for vulnerability in vulnerabilities:
-                    if vulnerability.get('severity') in ['medium', 'high'] and not found_vulnerability:
+                    if vulnerability.get('severity') == 'high' or vulnerability.get('severity') == 'medium':
                         vulnerabilities_found.append({
                             "component": component,
                             "version": version,
