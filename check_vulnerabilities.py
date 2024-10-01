@@ -10,16 +10,16 @@ def check_vulnerabilities(report_file):
         add_component = {}
         for item in data['data']:
             for result in item.get('results', []):
-                component = result.get("component", "Unknown Component")
-                version = result.get("version", "Unknown Version")
+                component = result.get('component', 'Unknown Component')
+                version = result.get('version', 'Unknown Version')
                 if component in add_component:
                     continue
-                add_component[component] = version
                 vulnerabilities = result.get('vulnerabilities', []) 
-                found_vulnerability = 0
                 for vulnerability in vulnerabilities:
                     if vulnerability.get('severity') in ['medium', 'high'] and not found_vulnerability:
                         vulnerabilities_found.append({
+                            "component": component,
+                            "version": version,
                             "severity": vulnerability.get("severity", "Unknown Severity"),
                             "detailed_summary": vulnerability.get("identifiers", {}).get("summary", ""), 
                             "info": vulnerability.get("info", []),
@@ -27,7 +27,7 @@ def check_vulnerabilities(report_file):
                             "bug": vulnerability.get("identifiers", {}).get("bug", "No Bug Info"),
                             "cwe": vulnerability.get("cwe", [])
                         })
-                        found_vulnerability = 1
+                        add_component[component] = version
                         break
         if vulnerabilities_found:
             return True, vulnerabilities_found
