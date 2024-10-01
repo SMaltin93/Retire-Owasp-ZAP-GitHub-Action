@@ -11,8 +11,6 @@
   "license": "ISC",
   "dependencies": {
 
-    "jquery": "1.6",
-    
     "json-logic-js": "^2.0.5"
   }
 }
