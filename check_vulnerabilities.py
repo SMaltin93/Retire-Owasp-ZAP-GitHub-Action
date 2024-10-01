@@ -6,14 +6,13 @@ import requests
 def check_vulnerabilities(report_file):
     with open(report_file, 'r') as file:
         data = json.load(file)
-
         vulnerabilities_found = []
         for item in data['data']:
             for result in item.get('results', []):
                 for vulnerability in result.get('vulnerabilities', []):
                     if vulnerability.get('severity') == 'medium' or vulnerability.get('severity') == 'high':
                         vulnerabilities_found.append({
-                            "component": result.get("component", "Unknown Component"),
+                            "component": result.get("component", "Unknown Component"), 
                             "version": result.get("version", "Unknown Version"),
                             "severity": vulnerability.get("severity", "Unknown Severity"),
                             "detailed_summary": vulnerability.get("identifiers", {}).get("summary", ""), 
@@ -22,7 +21,7 @@ def check_vulnerabilities(report_file):
                             "bug": vulnerability.get("identifiers", {}).get("bug", "No Bug Info"),
                             "cwe": vulnerability.get("cwe", [])
                         })
-                    if len(vulnerabilities_found) == 2:  # Get only the first two vulnerabilities
+                    if len(vulnerabilities_found) == 2:  # Get only the first two items in the vulnerabilities list
                         return True, vulnerabilities_found
     return False, None
 
@@ -38,7 +37,6 @@ def send_slack_message(slack_webhook, vulnerabilities, author, repository, branc
                             f"*Click here to view the commit:* {commit_url}\n"
                             f"*Vulnerabilities Found:*"}
     
-    
     for vuln in vulnerabilities:
         slack_message["text"] += (
             f"\n*Component:* {vuln['component']} (Version: {vuln['version']})"
@@ -49,18 +47,14 @@ def send_slack_message(slack_webhook, vulnerabilities, author, repository, branc
             f"\n*CWE:* {', '.join(vuln['cwe'])}"
             f"\n*More Info:* {', '.join(vuln['info'])}\n"
         )
-        
-
     response = requests.post(slack_webhook_url, json=slack_message)
     return response.status_code
-
 
 
 
 if __name__ == "__main__":
     report_file = 'retirejs-report.json'
     slack_webhook = os.environ['SLACK_WEBHOOK']
-
     author = os.environ.get('Author')
     repository = os.environ.get('Repository')
     branch = os.environ.get('Branch')
@@ -72,7 +66,6 @@ if __name__ == "__main__":
         send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, commit)
         # dont allow the pipeline to continue if vulnerabilities are found..... 
         print('Vulnerabilities found. Exiting...')
-        
         exit(1)
     else:
         print('No severity vulnerabilities found.')
