@@ -12,42 +12,38 @@ permissions:
 
 jobs:
   security-scan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v4 
+      uses: actions/checkout@v4  
 
     - name: Install dependencies
       uses: bahmutov/npm-install@v1 # install npm dependencies
 
     - name: Install RetireJS
       run: npm install -g retire
-      # run scan and upload the report
+    # run scan and upload the report
     - name: Run RetireJS Scan
       run: |
-        retire --outputformat json --outputpath retirejs-report.json --exitwith 0 
-      # upload the report directly to the repository 
-
-   #  Set up Python for running your custom script
-    - name: Set up Python
-      uses: actions/setup-python@v2 # setup python
-      with:
-        python-version: '3.x'
-
-   #  Install the requests library
-    - name: Install Python dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        python3 -m pip install requests
-
-   # upload the report directly to the repository
+        retire --outputformat json --outputpath retirejs-report.json --path . --exitwith 0 
+    # upload the report directly to the repository
     - name: Upload RetireJS Report
       uses: actions/upload-artifact@v4
       with:
         name: retirejs-report
         path: retirejs-report.json
 
+   #  Set up Python for running your custom script
+    - name: Set up Python
+      uses: actions/setup-python@v2 
+      with:
+        python-version: '3.x'
+   #  Install the requests library
+    - name: Install Python dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        python3 -m pip install requests
    # Run the Python script to check vulnerabilities and send the Slack message if found
     - name: Run Vulnerability Check Python Script
       run: python3 check_vulnerabilities.py
@@ -69,13 +65,13 @@ jobs:
     needs: security-scan 
     runs-on: ubuntu-latest
     if: failure()   
-
+    
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
       with:
         fetch-depth: 0 
-
+  # Reset the commit to the last safe commit
     - name: Reset to the last commit
       run: |
         git reset --hard safe-commit  
