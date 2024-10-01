@@ -21,9 +21,8 @@ def check_vulnerabilities(report_file):
                             "bug": vulnerability.get("identifiers", {}).get("bug", "No Bug Info"),
                             "cwe": vulnerability.get("cwe", [])
                         })
-                        break
-        if vulnerabilities_found:
-            return True, vulnerabilities_found
+                    break
+        return True, vulnerabilities_found
     return False, None
 
  
