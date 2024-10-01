@@ -9,8 +9,10 @@ def check_vulnerabilities(report_file):
         vulnerabilities_found = []
         for item in data['data']:
             for result in item.get('results', []):
-                for vulnerability in result.get('vulnerabilities', []):
-                    if vulnerability.get('severity') == 'medium' or vulnerability.get('severity') == 'high':
+                vulnerabilities = result.get('vulnerabilities', []) 
+                found_vulnerability = 0
+                for vulnerability in vulnerabilities:
+                    if vulnerability.get('severity') in ['medium', 'high'] and not found_vulnerability:
                         vulnerabilities_found.append({
                             "component": result.get("component", "Unknown Component"), 
                             "version": result.get("version", "Unknown Version"),
@@ -21,8 +23,10 @@ def check_vulnerabilities(report_file):
                             "bug": vulnerability.get("identifiers", {}).get("bug", "No Bug Info"),
                             "cwe": vulnerability.get("cwe", [])
                         })
-                    break
-        return True, vulnerabilities_found
+                        found_vulnerability = 1
+                        break
+        if vulnerabilities_found:
+            return True, vulnerabilities_found
     return False, None
 
  
