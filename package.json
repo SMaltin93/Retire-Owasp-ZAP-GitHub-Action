@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/SMaltin93/Retire-Owasp-ZAP-GitHub-Action#readme",
   "dependencies": {
-  
-    "jsdom": "^25.0.1"
+    "jquery": "^1.12.4",
+    "jsdom": "^25.0.1",
+    "mootools": "^1.5.2",
+    "prototype": "^0.0.5"
   }
 }
