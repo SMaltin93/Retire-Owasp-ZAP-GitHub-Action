@@ -7,15 +7,19 @@ def check_vulnerabilities(report_file):
     with open(report_file, 'r') as file:
         data = json.load(file)
         vulnerabilities_found = []
+        add_component = {}
         for item in data['data']:
             for result in item.get('results', []):
+                component = result.get("component", "Unknown Component")
+                version = result.get("version", "Unknown Version")
+                if component in add_component:
+                    continue
+                add_component[component] = version
                 vulnerabilities = result.get('vulnerabilities', []) 
                 found_vulnerability = 0
                 for vulnerability in vulnerabilities:
                     if vulnerability.get('severity') in ['medium', 'high'] and not found_vulnerability:
                         vulnerabilities_found.append({
-                            "component": result.get("component", "Unknown Component"), 
-                            "version": result.get("version", "Unknown Version"),
                             "severity": vulnerability.get("severity", "Unknown Severity"),
                             "detailed_summary": vulnerability.get("identifiers", {}).get("summary", ""), 
                             "info": vulnerability.get("info", []),
