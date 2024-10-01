@@ -21,7 +21,7 @@ def check_vulnerabilities(report_file):
                             "bug": vulnerability.get("identifiers", {}).get("bug", "No Bug Info"),
                             "cwe": vulnerability.get("cwe", [])
                         })
-                    if len(vulnerabilities_found) == 2:  # Get only the first two items in the vulnerabilities list
+                    if len(vulnerabilities_found) == 2:  # first two items in the vulnerabilities list
                         return True, vulnerabilities_found
     return False, None
 

@@ -5,7 +5,7 @@ document.getElementById('message').textContent = 'Hello, World! from our bad com
 const button = document.createElement('button');
 button.textContent = 'Click me!';
 button.addEventListener('click', () => {
-  alert('Nice job! You clicked the button!');
+  alert('Nice job! You are amazing!');
 });
 
 // Append the button to the body (or another parent element)
