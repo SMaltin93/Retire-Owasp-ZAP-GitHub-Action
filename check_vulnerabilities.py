@@ -9,21 +9,25 @@ def check_vulnerabilities(report_file):
         vulnerabilities_found = []
         for item in data['data']:
             for result in item.get('results', []):
-                for vulnerability in result.get('vulnerabilities', []):
-                    if vulnerability.get('severity') == 'medium' or vulnerability.get('severity') == 'high':
-                        vulnerabilities_found.append({
-                            "component": result.get("component", "Unknown Component"), 
-                            "version": result.get("version", "Unknown Version"),
-                            "severity": vulnerability.get("severity", "Unknown Severity"),
-                            "detailed_summary": vulnerability.get("identifiers", {}).get("summary", ""), 
-                            "info": vulnerability.get("info", []),
-                            "CVE": vulnerability.get("identifiers", {}).get("CVE", ["N/A"]),  # Handle missing 
-                            "bug": vulnerability.get("identifiers", {}).get("bug", "No Bug Info"),
-                            "cwe": vulnerability.get("cwe", [])
-                        })
-                    if len(vulnerabilities_found) == 2:  # first two items in the vulnerabilities list
-                        return True, vulnerabilities_found
+                if result.get('vulnerabilities', []):
+                    for vuln in result['vulnerabilities']:
+                        if vuln['severity'] == 'high' or vuln['severity'] == 'medium':
+                            vulnerabilities_found.append({
+                                'component': result.get('component', ''),
+                                'version': result.get('version', ''),
+                                'severity': vuln.get('severity', ''),
+                                'detailed_summary': vuln.get('detailed_summary', ''),
+                                'CVE': vuln.get('identifiers', {}).get('CVE', []),
+                                'bug': vuln.get('info', {}).get('bug', ''),
+                                'cwe': vuln.get('info', {}).get('cwe', []),
+                                'info': vuln.get('info', {}).get('info', [])
+                            })
+                            # just one vulnerability in every result
+                            break
+        if vulnerabilities_found:
+            return True, vulnerabilities_found
     return False, None
+
 
  
 def send_slack_message(slack_webhook, vulnerabilities, author, repository, branch, commit):

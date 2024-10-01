@@ -53,12 +53,12 @@ jobs:
         Repository: ${{ github.repository }}
         Branch: ${{ github.ref }}
         Commit: ${{ github.sha }}
-  # tag the commit with the scan results
+  # tag the commit with "safe-commit" if the scan passes
     - name: Tag the commit with the scan results
       if: success()
       run: |
         git tag -f safe-commit
-        git push origin safe-commit --force
+        git push origin safe-commit --force 
  
   # Reset the commit to the last commit if the scan fails
   push-code:
