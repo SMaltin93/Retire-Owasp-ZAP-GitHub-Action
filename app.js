@@ -1,5 +1,5 @@
 // Update the message in the 'message' <p> element
-document.getElementById('message').textContent = 'Welcome to our useful app! (:';
+document.getElementById('message').textContent = 'DevOps app! (:';
 
 // Create a button element
 const button = document.createElement('button');
