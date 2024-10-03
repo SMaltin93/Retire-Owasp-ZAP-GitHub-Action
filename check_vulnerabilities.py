@@ -23,7 +23,7 @@ def check_vulnerabilities(report_file):
                             "severity": vulnerability.get("severity", "Unknown Severity"),
                             "detailed_summary": vulnerability.get("identifiers", {}).get("summary", ""), 
                             "info": vulnerability.get("info", []),
-                            "CVE": vulnerability.get("identifiers", {}).get("CVE", ["N/A"]),  # Handle missing 
+                            "CVE": vulnerability.get("identifiers", {}).get("CVE", ["N/A"]),  # Handle missing  
                             "bug": vulnerability.get("identifiers", {}).get("bug", "No Bug Info"),
                             "cwe": vulnerability.get("cwe", [])
                         })
